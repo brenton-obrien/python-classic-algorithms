@@ -1,5 +1,7 @@
+# Imports
 import os
 import random
+import math
 
 # Clears the terminal screen
 def cls():
@@ -35,43 +37,49 @@ def main_menu():
 
     elif user_input == '5':
         cls()
+        Sieve_of_Eratosthenes()
 
     elif user_input == '6':
         exit()
 
+    # Prevents incorrect input and reloads menu
     else:
         cls()
         main_menu()
 
 
+# Runs after each algorithm is completed
 def retry_option(function):
     print('----------------------------------------')
     print('1) Retry?')
     print('2) Main Menu')
     print('3) Exit')
     print('----------------------------------------')
-    user_input = input('Make a selection:\n>')
+    user_input = ''
 
+    # Prevents incorrect input by keeping user in while loop until correct input
     while user_input not in ['1', '2', '3']:
-        continue
+        user_input = input('Make a selection:\n>')
 
-    else:
-        if user_input == '1':
-            cls()
-            function()
+    if user_input == '1':
+        cls()
+        function()
 
-        elif user_input == '2':
-            cls()
-            main_menu()
+    elif user_input == '2':
+        cls()
+        main_menu()
 
-        elif user_input == '3':
-            exit()
+    elif user_input == '3':
+        exit()
 
 
 def collatz_conjecture():
     try:
         print('\n---------- CLASSIC ALGORITHMS ----------\n')
         print('---------- Collatz Conjecture ----------')
+        # Gets integer input to 1
+        # If even, divide by 2
+        # If odd, multiply by 3 and add 1
 
         collatz_list = []
 
@@ -79,16 +87,20 @@ def collatz_conjecture():
 
         if collatz_num > 0:
 
+            # Exit this while loop once the program successfully gets to 1
             while collatz_num != 1:
 
+                # Divides even numbers by 2 (adds results to a list)
                 if collatz_num % 2 == 0:
                     collatz_num = (collatz_num/2)
                     collatz_list.append(str(int(collatz_num)))
 
+                # Multiply odd by 3 and add 1 (adds results to a list)
                 elif collatz_num % 2 != 0:
                     collatz_num = ((collatz_num * 3) + 1)
                     collatz_list.append(str(int(collatz_num)))
 
+            # Show results and number of steps taken to reach 1
             print(f'\nSequence completed in {len(collatz_list)} steps.')
             print(', '.join(collatz_list) + '\n')
 
@@ -108,7 +120,7 @@ def merge_sort_list():
 
         # Create array of user defined length
         array_length = int(input('\nEnter the length of the array:\n>'))
-        random_array = [random.choice(range(1, 100)) for num in range(0, array_length)]
+        random_array = [random.choice(range(1, 100)) for _num in range(0, array_length)]
 
         if array_length > 0:
 
@@ -137,6 +149,7 @@ def merge_sort(array):
         left_array = array[:len(array)//2]
         right_array = array[len(array)//2:]
 
+        # Prints each split to show user algorithm
         print(f'Left array = {left_array}')
         print(f'Right array = {right_array}\n')
 
@@ -182,11 +195,10 @@ def bubble_sort():
 
         # Create array of user defined length
         array_length = int(input('\nEnter the length of the array:\n>'))
-        random_array = [random.choice(range(1, 100)) for num in range(0, array_length)]
+        random_array = [random.choice(range(1, 100)) for _num in range(0, array_length)]
 
         if array_length > 0:
 
-            # Show user the array then begin to sort it
             print(f'\nUnsorted array = {random_array}\n')
             print('----------------------------------------\n')
 
@@ -194,8 +206,10 @@ def bubble_sort():
             is_sorted = False
 
             while not is_sorted:
+                # Can only exit this loop if no swaps are completed in the loop
                 is_sorted = True
                 for i in range(0, index_length):
+                    # Swaps numbers if the left number is bigger than the right
                     if random_array[i] > random_array[i + 1]:
                         random_array[i], random_array[i + 1] = random_array[i + 1], random_array[i]
                         i += 1
@@ -203,7 +217,6 @@ def bubble_sort():
                         print('Sorting array:')
                         print(f'{random_array}\n')
 
-            # Display this once sorting has been completed, and ask for user input
             print('\nArray sorting complete!\n')
 
         else:
@@ -215,22 +228,38 @@ def bubble_sort():
     retry_option(bubble_sort)
 
 
-# The closest pair of points problem or closest pair problem is a problem of computational geometry: given n points in metric space, find a pair of points
-# with the smallest distance between them.
 def closest_pair():
+    # This is not the most optimised solution for this problem, this is instead a bruteforce method which is more beginner friendly to understand
     try:
         print('\n---------- CLASSIC ALGORITHMS ----------\n')
         print('------------ Closest Pair --------------')
 
-        # Create array of user defined length
-        array_length = int(input('\nEnter the amount of points on the x, y axis:\n>'))
-        random_array = [(random.choice(range(1, 100)), random.choice(range(1, 100))) for num in range(0, array_length)]
+        # Creates a list of tuples with (x, y) values
+        num_of_points = int(input('\nEnter the amount of points on the x, y axis:\n>'))
+        random_points = [(random.choice(range(1, 100)), random.choice(range(1, 100))) for _num in range(0, num_of_points)]
 
-        if array_length > 0:
+        # only compare with 2 or more coordinates
+        if num_of_points > 2:
 
-            # Show user the array then begin to sort it
-            print(f'\nPoints (x, y): {random_array}')
+            point_pair_distance = []
+
+            print(f'\nPoints = {random_points}')
             print('----------------------------------------\n')
+
+            # Pair up every possible combinations
+            all_possible_pairs = [(random_points[x], random_points[y]) for x in range(len(random_points)) for y in range(x + 1, len(random_points))]
+            print(f'{len(all_possible_pairs)} possible pairs:\n')
+
+            # Calculates distance of all these pairs and saves them in a list of tuples (distance, coord1, coord2)
+            for coord1, coord2 in all_possible_pairs:
+                print(coord1, coord2)
+                point_pair_distance.append([math.sqrt(((coord1[0] - coord2[0]) ** 2) + ((coord1[1] - coord2[1]) ** 2)), coord1, coord2])
+
+            # Tuple unpacking to find the smallest distance
+            min_distance, min_coord1, min_coord2 = min(point_pair_distance)
+
+            # Prints results
+            print(f'\nThe smallest distance is: {min_distance}\n\nFound between {min_coord1} and {min_coord2}\n')
 
         else:
             print('INVALID INPUT')
@@ -239,6 +268,57 @@ def closest_pair():
         print('INVALID INPUT')
 
     retry_option(closest_pair)
+
+
+def Sieve_of_Eratosthenes():
+    try:
+        print('\n---------- CLASSIC ALGORITHMS ----------\n')
+        print('-------- Sieve of Eratosthenes ---------')
+
+        # Creates a list of range: 2 - n
+        range_of_num = int(input('\nEnter upper limit of array (must be 2 or larger)\n>'))
+
+        if range_of_num > 2:
+
+            all_nums = [num for num in range(2, range_of_num + 1)]
+            print(f'Unsearched list = {all_nums}\n')
+
+            # p is the current prime being searched
+            p = 2
+            index = 0
+
+            list_length = len(all_nums)
+
+            while index < list_length - 1:
+
+                for num in all_nums:
+                    if num == p:
+                        pass
+
+                    # Removes all numbers from list that a multiples of the current p
+                    elif num % p == 0:
+                        all_nums.remove(num)
+
+                # Shows current algorithm progress
+                print(f'Removing factors of {p}:')
+                print(f'{all_nums}\n')
+
+                # Changes p to next available number in list
+                list_length = len(all_nums)
+                index += 1
+                p = all_nums[index]
+
+            # Prints results
+            print(f'Found {len(all_nums)} primes from 0-{range_of_num}\n')
+            print('Prime Searching Complete!')
+
+        else:
+            print('INVALID INPUT')
+
+    except ValueError:
+        print('INVALID INPUT')
+
+    retry_option(Sieve_of_Eratosthenes)
 
 
 main_menu()
